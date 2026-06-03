@@ -10,8 +10,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const COMPETITION = "copa-do-mundo";
 const DASHBOARD_SLUG = "sem-ganhar-de-um-campeao";
-const dashboardDir = path.join(root, DASHBOARD_SLUG);
+const BASE = `${COMPETITION}/${DASHBOARD_SLUG}`;
+const dashboardDir = path.join(root, COMPETITION, DASHBOARD_SLUG);
 const src = fs.readFileSync(path.join(dashboardDir, "data.js"), "utf8");
 
 // data.js attaches to a `window` object; give it a shim and capture.
@@ -28,8 +30,8 @@ function template(row) {
   const beat = NATION[row.beat].pt;
   const title = `${nation} — ${row.years} anos · Sem ganhar de um campeão`;
   const desc = `Sem ganhar de um campeão: ${nation} não vence outro campeão mundial em Copa há ${row.years} anos — desde ${row.wc}, contra ${beat}. Contadores avançam por dia.`;
-  const absoluteUrl = `${SITE}/${DASHBOARD_SLUG}/s/${row.nation}.html`;
-  const absoluteImage = `${SITE}/${DASHBOARD_SLUG}/og/${row.nation}.png`;
+  const absoluteUrl = `${SITE}/${BASE}/s/${row.nation}.html`;
+  const absoluteImage = `${SITE}/${BASE}/og/${row.nation}.png`;
   // Relative redirect into the dashboard root with the right nation pre-selected.
   const target = `../?nation=${encodeURIComponent(row.nation)}`;
   return `<!doctype html>
@@ -56,36 +58,15 @@ function template(row) {
 </html>`;
 }
 
-// Legacy /s/<nation>.html (and .pt.html) — soft-redirects to new path.
-// Best we can do on raw Pages (no .htaccess / no edge config).
-function legacyRedirect(row) {
-  const target = `/${DASHBOARD_SLUG}/s/${row.nation}.html`;
-  return `<!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<title>Movido — Sem ganhar de um campeão</title>
-<link rel="canonical" href="${SITE}${target}">
-<meta http-equiv="refresh" content="0; url=${target}">
-</head>
-<body><script>location.replace(${JSON.stringify(target)});</script></body>
-</html>`;
-}
-
 const outDir = path.join(dashboardDir, "s");
-const legacyDir = path.join(root, "s");
 fs.mkdirSync(outDir, { recursive: true });
-fs.mkdirSync(legacyDir, { recursive: true });
 
-// Wipe the dashboard /s/ first so stale `.pt.html` from the bilingual era don't linger.
+// Wipe the dashboard /s/ first so stale shells don't linger.
 for (const f of fs.readdirSync(outDir)) fs.unlinkSync(path.join(outDir, f));
 
 let count = 0;
 for (const row of DROUGHT) {
   fs.writeFileSync(path.join(outDir, `${row.nation}.html`), template(row));
-  fs.writeFileSync(path.join(legacyDir, `${row.nation}.html`), legacyRedirect(row));
-  fs.writeFileSync(path.join(legacyDir, `${row.nation}.pt.html`), legacyRedirect(row));
   count++;
 }
-console.log(`Wrote ${count} share pages to /${DASHBOARD_SLUG}/s/`);
-console.log(`Wrote ${count * 2} legacy redirect shells to /s/`);
+console.log(`Wrote ${count} share pages to /${BASE}/s/`);

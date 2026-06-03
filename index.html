@@ -3,73 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>um tempão — painéis que medem secas longas no esporte</title>
-<meta name="description" content="Painéis que medem secas longas no esporte. Cada painel completa a frase: um tempão…">
+<title>um tempão — painéis que medem o tempo no esporte</title>
+<meta name="description" content="Painéis que medem o tempo no esporte. Escolha uma competição: Copa do Mundo, e em breve mais.">
 
-<meta property="og:title" content="um tempão — painéis que medem secas longas no esporte">
-<meta property="og:description" content="Painéis que medem secas longas no esporte. Cada painel completa a frase: um tempão…">
-<meta property="og:image" content="https://umtempao.com/sem-ganhar-de-um-campeao/og-image.png">
+<meta property="og:title" content="um tempão — painéis que medem o tempo no esporte">
+<meta property="og:description" content="Painéis que medem o tempo no esporte. Escolha uma competição.">
+<meta property="og:image" content="https://umtempao.com/copa-do-mundo/a-ultima-vez/og-image.png">
 <meta property="og:url" content="https://umtempao.com/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="um tempão — painéis que medem secas longas no esporte">
-<meta name="twitter:description" content="Painéis que medem secas longas no esporte. Cada painel completa a frase: um tempão…">
-<meta name="twitter:image" content="https://umtempao.com/sem-ganhar-de-um-campeao/og-image.png">
+<meta name="twitter:title" content="um tempão — painéis que medem o tempo no esporte">
+<meta name="twitter:description" content="Painéis que medem o tempo no esporte. Escolha uma competição.">
+<meta name="twitter:image" content="https://umtempao.com/copa-do-mundo/a-ultima-vez/og-image.png">
 
-<link rel="stylesheet" href="colors_and_type.css">
-<link rel="stylesheet" href="tokens-soccer.css">
+<link rel="stylesheet" href="/colors_and_type.css">
+<link rel="stylesheet" href="/tokens-soccer.css">
 
 <style>
   html { height: 100%; }
   body { min-height: 100%; margin: 0; padding: 0; background: #0C0820; color: #F3EEFF; font-family: var(--ttt-font-ui); }
   .hub { max-width: 720px; margin: 0 auto; padding: 56px 24px 80px; }
   .brand { font: 700 44px/1.05 var(--ttt-font-display); color: #F3EEFF; letter-spacing: -0.01em; }
-  .brand .cyan { color: #34E6D9; }
   .brand .dots { color: #7E72B8; }
   .tagline { margin-top: 14px; font: 400 17px/1.45 var(--ttt-font-ui); color: #B4A9E0; max-width: 560px; }
   .grid { margin-top: 44px; display: flex; flex-direction: column; gap: 14px; }
   .card { display: block; padding: 22px 24px; background: #14102B; border: 2px solid #2A2257; box-shadow: 4px 4px 0 rgba(0,0,0,0.45); text-decoration: none; transition: border-color 0.15s, transform 0.15s; }
   .card:hover { border-color: #34E6D9; transform: translate(-1px, -1px); }
-  .card .sentence { font: 700 22px/1.2 var(--ttt-font-display); color: #FFE24D; letter-spacing: -0.005em; }
+  .card .name { font: 700 24px/1.2 var(--ttt-font-display); color: #34E6D9; letter-spacing: -0.005em; }
   .card .desc { margin-top: 8px; font: 400 14px/1.45 var(--ttt-font-ui); color: #B4A9E0; }
+  .card .count { margin-top: 10px; font: 700 11px var(--ttt-font-ui); letter-spacing: 0.14em; text-transform: uppercase; color: #7E72B8; }
   .credit { margin-top: 64px; font: 700 11px var(--ttt-font-ui); letter-spacing: 0.14em; text-transform: uppercase; color: #7E72B8; }
   .credit a { color: inherit; text-decoration: none; }
 </style>
 </head>
 <body>
 
-<script>
-  // Legacy deep-link compat: anything that hit `/?nation=X` (the dashboard
-  // used to live here) bounces to the dashboard with the nation preserved.
-  (function () {
-    var p = new URLSearchParams(location.search);
-    var nation = p.get("nation");
-    if (nation) {
-      location.replace("/sem-ganhar-de-um-campeao/?nation=" + encodeURIComponent(nation));
-    }
-  })();
-</script>
-
 <div class="hub">
   <h1 class="brand">um tempão<span class="dots">…</span></h1>
-  <p class="tagline">Painéis que medem secas longas no esporte. Cada painel completa a frase: <em>um tempão</em>…</p>
+  <p class="tagline">Painéis que medem o tempo no esporte. Escolha uma competição.</p>
   <div id="grid" class="grid"></div>
   <div class="credit">
     <a href="https://fellipebrito.com" target="_blank" rel="noopener">Feito por Fellipe Brito · fellipebrito.com</a>
   </div>
 </div>
 
-<script src="dashboards.js"></script>
+<script src="/competitions.js"></script>
 <script>
   (function () {
     var grid = document.getElementById("grid");
-    window.DASHBOARDS.forEach(function (d) {
+    window.COMPETITIONS.forEach(function (c) {
+      var n = c.boards.length;
       var a = document.createElement("a");
       a.className = "card";
-      a.href = "/" + d.slug + "/";
-      a.innerHTML = '<div class="sentence">' + d.sentence + '</div>' +
-                    '<div class="desc">' + d.description + '</div>';
+      a.href = "/" + c.slug + "/";
+      a.innerHTML = '<div class="name">' + c.name + '</div>' +
+                    '<div class="desc">' + c.tagline + '</div>' +
+                    '<div class="count">' + n + (n === 1 ? ' painel' : ' painéis') + '</div>';
       grid.appendChild(a);
     });
   })();

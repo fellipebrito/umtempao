@@ -15,7 +15,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const nations = JSON.parse(fs.readFileSync(path.join(root, "data", "nations.json"), "utf8"));
 const STAGES = ["qf", "sf", "final"];
 const URL_BASE = (process.env.URL || "http://localhost:8000/").replace(/\/?$/, "/");
-const PAGE_URL = URL_BASE + "a-ultima-vez/";
+const PAGE_URL = URL_BASE + "copa-do-mundo/a-ultima-vez/";
 const arg = process.argv[2];
 
 let targets = nations.filter((n) => n.qualified2026);
@@ -23,7 +23,7 @@ if (arg === "all") targets = nations;
 else if (arg) targets = nations.filter((n) => n.slug === arg);
 if (!targets.length) { console.error(`no nation matches "${arg}"`); process.exit(1); }
 
-const outDir = path.join(root, "a-ultima-vez", "og");
+const outDir = path.join(root, "copa-do-mundo", "a-ultima-vez", "og");
 fs.mkdirSync(outDir, { recursive: true });
 
 const browser = await chromium.launch();

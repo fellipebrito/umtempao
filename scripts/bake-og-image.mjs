@@ -9,12 +9,14 @@
 // http://localhost:8000/). Navigates to URL_BASE + dashboard slug.
 import { chromium } from "playwright";
 
+const COMPETITION = "copa-do-mundo";
 const DASHBOARD_SLUG = "sem-ganhar-de-um-campeao";
+const BASE = `${COMPETITION}/${DASHBOARD_SLUG}`;
 const NATION = process.argv[2] || "england";
 const LANG = process.argv[3] || "pt";
-const OUT = process.argv[4] || `${DASHBOARD_SLUG}/og/${NATION}.png`;
+const OUT = process.argv[4] || `${BASE}/og/${NATION}.png`;
 const URL_BASE = process.env.URL || "http://localhost:8000/";
-const URL = URL_BASE.replace(/\/?$/, "/") + DASHBOARD_SLUG + "/";
+const URL = URL_BASE.replace(/\/?$/, "/") + BASE + "/";
 
 const browser = await chromium.launch();
 const page = await browser.newPage({

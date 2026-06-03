@@ -9,7 +9,9 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://umtempao.com";
+const COMP = "copa-do-mundo";
 const DASH = "a-ultima-vez";
+const BASE = `${COMP}/${DASH}`;
 const nations = JSON.parse(fs.readFileSync(path.join(root, "data", "nations.json"), "utf8"));
 const STAGES = ["qf", "sf", "final"];
 const STAGE_PT = { qf: "quartas de final", sf: "semifinal", final: "final" };
@@ -27,8 +29,8 @@ function copy(n, stage) {
 
 function shell(n, stage) {
   const { title, desc } = copy(n, stage);
-  const url = `${SITE}/${DASH}/s/${n.slug}-${stage}.html`;
-  const img = `${SITE}/${DASH}/og/${n.slug}-${stage}.png`;
+  const url = `${SITE}/${BASE}/s/${n.slug}-${stage}.html`;
+  const img = `${SITE}/${BASE}/og/${n.slug}-${stage}.png`;
   const target = `../?n=${encodeURIComponent(n.slug)}`;
   return `<!doctype html>
 <html lang="pt-BR">
@@ -54,7 +56,7 @@ function shell(n, stage) {
 </html>`;
 }
 
-const outDir = path.join(root, DASH, "s");
+const outDir = path.join(root, COMP, DASH, "s");
 fs.mkdirSync(outDir, { recursive: true });
 for (const f of fs.readdirSync(outDir)) if (f.endsWith(".html")) fs.unlinkSync(path.join(outDir, f));
 
@@ -63,4 +65,4 @@ for (const n of nations) for (const stage of STAGES) {
   fs.writeFileSync(path.join(outDir, `${n.slug}-${stage}.html`), shell(n, stage));
   count++;
 }
-console.log(`Wrote ${count} share shells to /${DASH}/s/`);
+console.log(`Wrote ${count} share shells to /${BASE}/s/`);
