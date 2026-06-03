@@ -39,7 +39,7 @@ function Wordmark({ lang, small }) {
   );
 }
 
-// rank ribbon (LONGEST / SHORTEST / #N)
+// rank ribbon (LONGEST / SHORTEST / #N) — label only, no duplicate prefix
 function RankTag({ row, lang }) {
   const longest = row.rank === 1;
   const shortest = row.rank === 8;
@@ -54,7 +54,68 @@ function RankTag({ row, lang }) {
       color: "var(--sx-crt-900)", background: c,
       padding: "4px 10px", border: "2px solid var(--sx-crt-900)",
       boxShadow: "var(--sx-num-shadow-sm)",
-    }}>#{row.rank} · {label}</span>
+    }}>{label}</span>
+  );
+}
+
+// ── Credit · "BUILT BY FELLIPE BRITO · FELLIPEBRITO.COM" ──────
+// onCard=true → baked into the share-card PNG (plain text, no <a>).
+// onCard=false → clickable on the live board / detail pages.
+function Credit({ onCard = false }) {
+  const label = "BUILT BY FELLIPE BRITO · FELLIPEBRITO.COM";
+  const baseStyle = { letterSpacing: "0.14em", fontSize: onCard ? 14 : 11, fontWeight: 700 };
+  if (onCard) {
+    return (
+      <span style={{
+        ...baseStyle, color: "var(--sx-ink-dim)",
+        textTransform: "uppercase", fontFamily: "var(--ttt-font-ui)",
+      }}>
+        {label}
+      </span>
+    );
+  }
+  return (
+    <a href="https://fellipebrito.com" target="_blank" rel="noopener" style={{ textDecoration: "none" }}>
+      <Cap color="var(--sx-ink-dim)" style={baseStyle}>{label}</Cap>
+    </a>
+  );
+}
+
+// ── Non-wins list (NationCard only) ───────────────────────────
+// Loss = magenta tick; Draw = dim tick. Reads as the drought timeline.
+function NonWinsList({ row, lang }) {
+  const list = window.NONWINS[row.nation] || [];
+  if (list.length === 0) {
+    return (
+      <div style={{
+        margin: "6px 20px", padding: "12px 14px",
+        background: "var(--sx-crt-800)", border: "2px solid var(--sx-crt-600)",
+        boxShadow: "var(--sx-num-shadow-sm)",
+      }}>
+        <Cap style={{ color: "var(--sx-cyan)" }}>{window.lz(window.STR.nonWinsNone, lang)}</Cap>
+      </div>
+    );
+  }
+  return (
+    <div style={{ margin: "10px 20px", display: "flex", flexDirection: "column", gap: 8 }}>
+      <Cap style={{ color: "var(--sx-ink-faint)" }}>{window.lz(window.STR.nonWinsTitle, lang)}</Cap>
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        {list.map((entry, i) => (
+          <div key={i} style={{
+            display: "grid", gridTemplateColumns: "32px 1fr", alignItems: "center", gap: 10,
+            background: i % 2 ? "var(--sx-crt-800)" : "var(--sx-crt-700)",
+            borderLeft: `4px solid ${entry.result === "L" ? "var(--sx-magenta)" : "var(--sx-ink-dim)"}`,
+            padding: "8px 10px",
+            boxShadow: "var(--sx-num-shadow-sm)",
+          }}>
+            <window.Flag code={entry.opp} size={28} />
+            <span style={{ font: "var(--ttt-t-small)", color: "var(--sx-ink)", lineHeight: 1.3 }}>
+              {window.nonWinLine(entry, lang)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -123,12 +184,16 @@ function ShareCard({ row, lang: langProp }) {
           </div>
         </div>
 
-        {/* footer pitch strip */}
-        <div style={{ height: 26, margin: "0 -56px 0", flexShrink: 0 }}>
-          <PitchBand height={26} lines={false} />
-        </div>
       </div>
       <Scanlines opacity={0.22} />
+      {/* credit, absolutely positioned to bottom — baked into PNG */}
+      <div style={{
+        position: "absolute", left: 0, right: 0, bottom: 0,
+        padding: "12px 56px 14px", textAlign: "center",
+        background: "linear-gradient(to top, rgba(12,8,32,0.95), rgba(12,8,32,0))",
+      }}>
+        <Credit onCard={true} />
+      </div>
     </div>
   );
 }
@@ -141,8 +206,8 @@ function NationCard({ row, onBack, onShare }) {
   const nat = window.NATION[row.nation];
   return (
     <div style={{
-      position: "relative", width: "100%", height: "100%", background: "var(--sx-crt-800)",
-      fontFamily: "var(--ttt-font-ui)", color: "var(--sx-ink)", display: "flex", flexDirection: "column", overflow: "hidden",
+      position: "relative", width: "100%", minHeight: "100%", background: "var(--sx-crt-800)",
+      fontFamily: "var(--ttt-font-ui)", color: "var(--sx-ink)", display: "flex", flexDirection: "column",
     }}>
       <Scanlines opacity={0.16} />
       {/* top bar */}
@@ -200,14 +265,22 @@ function NationCard({ row, onBack, onShare }) {
         </div>
       </div>
 
+      {/* non-wins since last win over a champion */}
+      <NonWinsList row={row} lang={lang} />
+
       {/* share button */}
-      <div style={{ position: "relative", marginTop: "auto", padding: "14px 20px 22px" }}>
+      <div style={{ position: "relative", marginTop: "auto", padding: "14px 20px 8px" }}>
         <button onClick={() => onShare && onShare(row, lang)} style={{
           width: "100%", padding: "16px 20px", border: "2px solid var(--sx-crt-900)",
           background: "var(--sx-yellow)", color: "var(--sx-crt-900)",
           font: "700 15px var(--ttt-font-ui)", letterSpacing: "0.1em", textTransform: "uppercase",
           boxShadow: "var(--sx-num-shadow-sm)", cursor: "pointer",
         }}>{window.lz(window.STR.shareCta, lang)}</button>
+      </div>
+
+      {/* credit (clickable) */}
+      <div style={{ position: "relative", padding: "4px 20px 18px", textAlign: "center" }}>
+        <Credit />
       </div>
     </div>
   );
@@ -272,8 +345,11 @@ function BoardMobile({ onSelectNation }) {
             onClick={onSelectNation ? () => onSelectNation(row.nation) : undefined} />
         ))}
       </div>
-      <div style={{ position: "relative", textAlign: "center", padding: "10px 16px 16px" }}>
+      <div style={{ position: "relative", textAlign: "center", padding: "10px 16px 4px" }}>
         <Cap style={{ color: "var(--sx-cyan)" }}>{window.lz(window.STR.tapDetail, lang)}</Cap>
+      </div>
+      <div style={{ position: "relative", textAlign: "center", padding: "4px 16px 16px" }}>
+        <Credit />
       </div>
     </div>
   );

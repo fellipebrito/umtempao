@@ -24,6 +24,40 @@ const NATION = {
   argentina: { en: "Argentina", pt: "Argentina",  kit: "#74B4E4", kitInk: "#2C3F9E" },
 };
 
+// ── Non-wins since the last win over a champion ───────────────
+// Keyed by the SAME nation key as DROUGHT. Subject-nation score first.
+// result: "L" loss · "D" draw. pens = penalty score (subject-first) when a
+// draw was decided on penalties. Sorted ascending by date.
+const NONWINS = {
+  england: [
+    { opp: "brazil",    score: "1-2", scorePt: "1-2", result: "L", phase: "quarter", wc: 2002, date: "2002-06-21" },
+    { opp: "germany",   score: "1-4", scorePt: "1-4", result: "L", phase: "r16",     wc: 2010, date: "2010-06-27" },
+    { opp: "italy",     score: "1-2", scorePt: "1-2", result: "L", phase: "group",   wc: 2014, date: "2014-06-14" },
+    { opp: "uruguay",   score: "1-2", scorePt: "1-2", result: "L", phase: "group",   wc: 2014, date: "2014-06-19" },
+    { opp: "france",    score: "1-2", scorePt: "1-2", result: "L", phase: "quarter", wc: 2022, date: "2022-12-10" },
+  ],
+  brazil: [
+    { opp: "france",    score: "0-1", scorePt: "0-1", result: "L", phase: "quarter", wc: 2006, date: "2006-07-01" },
+    { opp: "germany",   score: "1-7", scorePt: "1-7", result: "L", phase: "semi",    wc: 2014, date: "2014-07-08" },
+  ],
+  spain: [
+    { opp: "germany",   score: "1-1", scorePt: "1-1", result: "D", phase: "group",   wc: 2022, date: "2022-11-27" },
+  ],
+  italy: [
+    { opp: "uruguay",   score: "0-1", scorePt: "0-1", result: "L", phase: "group",   wc: 2014, date: "2014-06-24" },
+  ],
+  uruguay: [
+    { opp: "france",    score: "0-2", scorePt: "0-2", result: "L", phase: "quarter", wc: 2018, date: "2018-07-06" },
+  ],
+  germany: [
+    { opp: "spain",     score: "1-1", scorePt: "1-1", result: "D", phase: "group",   wc: 2022, date: "2022-11-27" },
+  ],
+  france: [
+    { opp: "argentina", score: "3-3", scorePt: "3-3", result: "D", pens: "2-4", phase: "final", wc: 2022, date: "2022-12-18" },
+  ],
+  argentina: [],  // reigning champions — no non-win vs a champion since the 2022 final
+};
+
 // rank order is longest-first; ties broken by precise days
 const DROUGHT = [
   { rank: 1, nation: "england",   beat: "argentina", score: "1-0",
@@ -64,6 +98,12 @@ const STR = {
   shareCta:     { en: "SHARE", pt: "COMPARTILHAR" },
   tapDetail:    { en: "TAP A NATION FOR DETAIL", pt: "TOQUE NUMA SELEÇÃO PARA DETALHE" },
   precise:      { en: "TO THE DAY", pt: "ATÉ O DIA" },
+  nonWinsTitle: { en: "NON-WINS SINCE", pt: "SEM VENCER DESDE ENTÃO" },
+  nonWinsNone:  { en: "No non-wins since — current champions",
+                  pt: "Sem tropeços desde então — campeões atuais" },
+  resultL:      { en: "LOSS", pt: "DERROTA" },
+  resultD:      { en: "DRAW", pt: "EMPATE" },
+  pensLost:     { en: "lost on pens", pt: "perdeu nos pênaltis" },
   // headline templates — {N} and {NATION} substituted
   headline:     { en: "years since {NATION} beat a fellow World Cup champion",
                   pt: "anos desde que {NATION} venceu um campeão mundial em Copa" },
@@ -93,4 +133,15 @@ function headlineText(row, lang) {
   return lz(STR.headline, lang).replace("{NATION}", nation);
 }
 
-Object.assign(window, { DROUGHT, NATION, PHASE, STR, lz, detailLine, headlineText, shareText });
+// "Germany · 1-7 · LOSS · Semi · 2014 World Cup"
+function nonWinLine(entry, lang) {
+  const opp   = lz(NATION[entry.opp], lang);
+  const score = lang === "pt" ? entry.scorePt : entry.score;
+  const phase = lz(PHASE[entry.phase], lang);
+  const wc    = lang === "pt" ? `Copa de ${entry.wc}` : `${entry.wc} World Cup`;
+  const res   = entry.result === "L" ? lz(STR.resultL, lang) : lz(STR.resultD, lang);
+  const pens  = entry.pens ? ` (${lz(STR.pensLost, lang)} ${entry.pens})` : "";
+  return `${opp} · ${score} · ${res}${pens} · ${phase} · ${wc}`;
+}
+
+Object.assign(window, { DROUGHT, NONWINS, NATION, PHASE, STR, lz, detailLine, headlineText, nonWinLine, shareText });
