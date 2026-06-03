@@ -1,0 +1,10 @@
+{
+  "name": "viralboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "World Champions' Drought Board — static GitHub Pages site.",
+  "scripts": {
+    "build:share": "node scripts/build-share-pages.mjs",
+    "serve": "python3 -m http.server 8000"
+  }
+}

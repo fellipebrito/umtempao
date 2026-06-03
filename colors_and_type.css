@@ -1,0 +1,236 @@
+/* -------------------------------------------------------------
+   Tee Time Trainer - Colors & Type
+   Design tokens extracted from the app codebase (src/styles/*)
+   and Figma. Use the CSS variables; avoid hardcoded hex.
+   ------------------------------------------------------------- */
+
+/* @import must come before any other rules. Reading surface
+   (Cut Line Golf articles) fonts - designer choice, flagged in README. */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap');
+
+/* Brand font - Space Mono, self-hosted. */
+@font-face {
+  font-family: "Space Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/SpaceMono_400Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Space Mono";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/SpaceMono_400Regular_Italic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Space Mono";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/SpaceMono_700Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Space Mono";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/SpaceMono_700Bold_Italic.ttf") format("truetype");
+}
+
+/* Reading surface (Cut Line Golf articles) - not in brand, designer choice, flagged in README. */
+
+:root {
+  /* -- Brand ----------------------------------------------- */
+  --ttt-primary:        #FFD66E;   /* gold - CTAs, highlights, the "T" */
+  --ttt-primary-600:    #E8B123;
+  --ttt-primary-700:    #B58A1C;
+  --ttt-background:     #467740;   /* the felt green - product bg */
+  --ttt-dark-primary:   #32542D;   /* darker green - borders, shadows */
+  --ttt-light:          #FFF8E3;   /* cream - body text on green */
+
+  /* accents used in the 3-T logo */
+  --ttt-t-silver:       #C5C5C5;
+  --ttt-t-gold:         #FFC227;
+  --ttt-t-bronze:       #C49754;
+
+  /* -- Yellows (from src/styles/colors.ts) ----------------- */
+  --ttt-yellow-50:  #FFF9E9;
+  --ttt-yellow-100: #FFECBC;
+  --ttt-yellow-200: #FFE39C;
+  --ttt-yellow-300: #FFD66E;
+  --ttt-yellow-400: #FFCE52;
+  --ttt-yellow-500: #FFC227;
+  --ttt-yellow-600: #E8B123;
+  --ttt-yellow-700: #B58A1C;
+  --ttt-yellow-800: #8C6B15;
+  --ttt-yellow-900: #6B5110;
+
+  /* -- Greens ---------------------------------------------- */
+  --ttt-green-50:  #EDF1EC;
+  --ttt-green-100: #C6D5C4;
+  --ttt-green-200: #AAC0A7;
+  --ttt-green-300: #83A47F;
+  --ttt-green-400: #6B9266;
+  --ttt-green-500: #467740;  /* = background */
+  --ttt-green-600: #406C3A;
+  --ttt-green-700: #32542D;  /* = dark primary */
+  --ttt-green-800: #274123;
+  --ttt-green-900: #1D321B;
+
+  /* -- Beiges / cream scale -------------------------------- */
+  --ttt-beige-50:  #FFFEFC;
+  --ttt-beige-100: #FFFDF6;
+  --ttt-beige-200: #FFFCF2;
+  --ttt-beige-300: #FFFAEC;
+  --ttt-beige-400: #FFF9E9;
+  --ttt-beige-500: #FFF8E3;  /* = light */
+  --ttt-beige-600: #E8E2CF;
+  --ttt-beige-700: #B5B0A1;
+  --ttt-beige-800: #8C887D;
+  --ttt-beige-900: #6B685F;
+
+  /* -- Neutrals -------------------------------------------- */
+  --ttt-neutral-50:  #F2F2F2;
+  --ttt-neutral-100: #D8D8D8;
+  --ttt-neutral-200: #C5C5C5;
+  --ttt-neutral-300: #AAAAAA;  /* = secondary */
+  --ttt-neutral-400: #999999;
+  --ttt-neutral-500: #808080;
+  --ttt-neutral-600: #747474;
+  --ttt-neutral-700: #5B5B5B;
+  --ttt-neutral-800: #464646;
+  --ttt-neutral-900: #363636;
+
+  /* -- Semantic -------------------------------------------- */
+  --ttt-danger:    #EE9989;
+  --ttt-danger-600:#D98B7D;
+  --ttt-warning:   #FBDE9E;
+  --ttt-challenge: #FA9E5B;
+  --ttt-success:   #89E386;  /* lightGreen */
+  --ttt-red:       #F16854;
+
+  /* -- Foregrounds / backgrounds (semantic roles) ---------- */
+  --ttt-bg:       var(--ttt-background);        /* felt green */
+  --ttt-bg-alt:   var(--ttt-green-700);         /* cards on green */
+  --ttt-bg-cream: var(--ttt-beige-500);         /* popups, articles */
+  --ttt-fg:       var(--ttt-light);             /* on green */
+  --ttt-fg-muted: var(--ttt-green-200);         /* on green, softer */
+  --ttt-fg-ink:   var(--ttt-neutral-800);       /* on cream */
+  --ttt-fg-ink-muted: var(--ttt-neutral-600);
+  --ttt-accent:   var(--ttt-primary);           /* gold */
+  --ttt-accent-ink: var(--ttt-neutral-800);     /* text on gold */
+  --ttt-border:   var(--ttt-green-700);         /* pixel borders */
+  --ttt-border-cream: var(--ttt-neutral-800);   /* borders on cream */
+
+  /* -- Type scale - in-app (Space Mono everywhere) --------- */
+  --ttt-font-mono:    "Space Mono", ui-monospace, Menlo, Consolas, monospace;
+  --ttt-font-ui:      "Space Mono", ui-monospace, Menlo, Consolas, monospace;
+  --ttt-font-display: "Space Mono", ui-monospace, Menlo, Consolas, monospace;
+  /* Long-form reading (Cut Line Golf articles). Use a readable serif. */
+  --ttt-font-read:    "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  /* Figma also specs Inter for small meta / spec labels */
+  --ttt-font-sans:    "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Scale (from Figma Typography frame + Text component defaults):
+     Title1 44/56 · Title2 32/36 · Title3 24/28
+     Large 19/24 · Regular 17/22 · Small 14/20 · Link 14/18 · Micro 11/16 */
+  --ttt-t-title1:    700 44px/56px var(--ttt-font-display);
+  --ttt-t-title2:    700 32px/36px var(--ttt-font-display);
+  --ttt-t-title3:    700 24px/28px var(--ttt-font-display);
+  --ttt-t-large:     400 19px/24px var(--ttt-font-ui);
+  --ttt-t-large-b:   700 19px/24px var(--ttt-font-ui);
+  --ttt-t-regular:   400 17px/22px var(--ttt-font-ui);
+  --ttt-t-regular-b: 700 17px/22px var(--ttt-font-ui);
+  --ttt-t-small:     400 14px/20px var(--ttt-font-ui);
+  --ttt-t-small-b:   700 14px/20px var(--ttt-font-ui);
+  --ttt-t-link:      700 14px/18px var(--ttt-font-ui);
+  --ttt-t-micro:     700 11px/16px var(--ttt-font-ui);
+
+  /* -- Spacing --------------------------------------------- */
+  --ttt-space-1:  4px;
+  --ttt-space-2:  8px;
+  --ttt-space-3:  12px;
+  --ttt-space-4:  16px;
+  --ttt-space-5:  24px;
+  --ttt-space-6:  32px;
+  --ttt-space-7:  48px;
+  --ttt-space-8:  64px;
+
+  /* -- Radii (pixel-art aesthetic: stay crisp) ------------- */
+  --ttt-radius-0: 0;        /* default for pixel art */
+  --ttt-radius-1: 4px;
+  --ttt-radius-2: 8px;
+  --ttt-radius-3: 12px;     /* cards */
+  --ttt-radius-4: 16px;     /* big cards */
+  --ttt-radius-pill: 999px;
+
+  /* -- Elevation - the "retro 3D drop shadow" --------------
+     The app uses a NON-blurred, hard-edged shadow: offset 4/4, no blur,
+     black @ 50%. It reads like an old arcade button. Use on buttons,
+     popups and feature cards. */
+  --ttt-shadow-hard:   4px 4px 0 rgba(0,0,0,0.5);
+  --ttt-shadow-hard-sm:2px 2px 0 rgba(0,0,0,0.45);
+  --ttt-shadow-hard-lg:6px 6px 0 rgba(0,0,0,0.5);
+  /* Inverse (for dark popups on cream): */
+  --ttt-shadow-hard-dark: 4px 4px 0 var(--ttt-neutral-800);
+
+  /* -- Pixel border widths --------------------------------- */
+  --ttt-border-px-1: 2px;   /* default thin pixel border */
+  --ttt-border-px-2: 3px;
+  --ttt-border-px-3: 4px;   /* chunky */
+
+  /* -- Motion (deliberate, snappy - not bouncy easing) ----- */
+  --ttt-ease:     steps(6, end);          /* arcade-feel for sprites */
+  --ttt-ease-out: cubic-bezier(.2,.8,.2,1);
+  --ttt-dur-1: 120ms;
+  --ttt-dur-2: 200ms;
+  --ttt-dur-3: 320ms;
+}
+
+/* -------------------------------------------------------------
+   Base / resets - opt-in by adding .ttt-base to a container.
+   ------------------------------------------------------------- */
+.ttt-base {
+  font-family: var(--ttt-font-ui);
+  color: var(--ttt-fg);
+  background: var(--ttt-bg);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.ttt-base * { box-sizing: border-box; }
+
+/* Semantic element shortcuts (use as utility classes) */
+.ttt-h1 { font: var(--ttt-t-title1); letter-spacing: -0.01em; }
+.ttt-h2 { font: var(--ttt-t-title2); }
+.ttt-h3 { font: var(--ttt-t-title3); }
+.ttt-large   { font: var(--ttt-t-large); }
+.ttt-large-b { font: var(--ttt-t-large-b); }
+.ttt-body    { font: var(--ttt-t-regular); }
+.ttt-body-b  { font: var(--ttt-t-regular-b); }
+.ttt-small   { font: var(--ttt-t-small); }
+.ttt-small-b { font: var(--ttt-t-small-b); }
+.ttt-link    { font: var(--ttt-t-link); text-decoration: underline; text-underline-offset: 3px; }
+.ttt-micro   { font: var(--ttt-t-micro); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Long-form read (articles, docs, Cut Line Golf) */
+.ttt-read {
+  font-family: var(--ttt-font-read);
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ttt-fg-ink);
+}
+.ttt-read h1 { font: var(--ttt-t-title1); color: var(--ttt-fg-ink); margin: 0 0 .4em; letter-spacing: -0.01em; }
+.ttt-read h2 { font: var(--ttt-t-title2); color: var(--ttt-fg-ink); margin: 1.6em 0 .3em; }
+.ttt-read h3 { font: var(--ttt-t-title3); color: var(--ttt-fg-ink); margin: 1.4em 0 .2em; }
+.ttt-read p  { margin: 0 0 1em; }
+.ttt-read blockquote {
+  margin: 1.4em 0;
+  padding: 16px 20px;
+  background: var(--ttt-beige-400);
+  border-left: 4px solid var(--ttt-primary);
+  font-style: italic;
+}
+.ttt-read code,
+.ttt-read pre { font-family: var(--ttt-font-mono); font-size: 0.9em; }

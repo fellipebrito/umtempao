@@ -1,0 +1,125 @@
+/* =============================================================
+   DROUGHT BOARD — DESIGN TOKENS
+   Multi-sport hub. Structure is BASE (shared) + SPORT THEME (overrides).
+   The next sport (NBA, golf) is a theme swap: re-point the --sx-* role
+   tokens at a different accent + motif set. Nothing below redefines the
+   TTT base — it extends it.
+   ============================================================= */
+
+/* -------------------------------------------------------------
+   BASE (shared) — comes from the Tee Time Trainer system.
+   Load colors_and_type.css FIRST; these are referenced, not redefined:
+     Type ...... Space Mono everywhere (--ttt-font-ui / -display)
+     Big number  Space Mono 700, huge (the "score" treatment)
+     Shadow .... hard, non-blurred 4px offset (--ttt-shadow-hard)
+     Borders ... chunky 2-4px pixel borders (--ttt-border-px-*)
+     Spacing ... 4-based scale (--ttt-space-*)
+     Radii ..... 0 (pixel art stays square)
+     Motion .... stepped / cubic-out, 120-320ms (--ttt-dur-*)
+   ------------------------------------------------------------- */
+
+:root {
+  /* ===========================================================
+     SOCCER THEME  (Option 3 "16-bit arcade" + Option 1 pitch motifs)
+     Swap this whole block per sport. Golf theme would re-point the
+     same role names at felt-green + gold; NBA at hardwood + team neon.
+     =========================================================== */
+
+  /* --- CRT field: deep-purple near-black --------------------- */
+  --sx-crt-900: #0C0820;   /* deepest — scanline base, number drop */
+  --sx-crt-800: #14102B;   /* primary card background */
+  --sx-crt-700: #1D1740;   /* raised panel / row */
+  --sx-crt-600: #2A2257;   /* divider / inset border on dark */
+
+  /* --- Ink on the dark field --------------------------------- */
+  --sx-ink:       #F3EEFF; /* primary text on CRT */
+  --sx-ink-dim:   #B4A9E0; /* secondary */
+  --sx-ink-faint: #7E72B8; /* tertiary / meta */
+
+  /* --- Neon accents (the arcade hook) ------------------------ */
+  --sx-yellow:      #FFE24D;  /* HERO NUMBER — the one big thing */
+  --sx-yellow-deep: #E8B400;  /* number under-shadow tint, pressed */
+  --sx-cyan:        #34E6D9;  /* primary accent — labels, active */
+  --sx-magenta:     #FF3DA6;  /* secondary accent — vs / alerts */
+
+  /* --- Pitch motifs (Option 1 layered in) -------------------- */
+  --sx-pitch:    #1F7A3E;     /* grass */
+  --sx-pitch-dk: #1A6A35;     /* mow stripe */
+  --sx-chalk:    #EAF3E6;     /* white field lines */
+  --sx-chalk-soft: rgba(234,243,230,0.55);
+
+  /* --- Role tokens (what components actually reference) ------ */
+  --sx-card-bg:       var(--sx-crt-800);
+  --sx-card-border:   var(--sx-cyan);
+  --sx-card-inset:    var(--sx-crt-600);
+  --sx-row-bg:        var(--sx-crt-700);
+  --sx-row-bg-alt:    var(--sx-crt-800);
+  --sx-accent:        var(--sx-cyan);
+  --sx-accent-2:      var(--sx-magenta);
+  --sx-number:        var(--sx-yellow);
+
+  /* --- Number 3D drop: hard, non-blurred (pixel rule) -------- */
+  --sx-num-shadow:    6px 6px 0 var(--sx-crt-900);
+  --sx-num-shadow-sm: 4px 4px 0 var(--sx-crt-900);
+
+  /* --- Pixel frame widths (reuse base, named for sport) ------ */
+  --sx-frame:   2px;
+  --sx-frame-lg:3px;
+
+  /* --- Scanline overlay (CRT texture, medium intensity) ------ */
+  --sx-scanline: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0.16) 2px,
+      rgba(0,0,0,0.16) 3px);
+
+  /* --- Dither shade (limited-palette shading) ---------------- */
+  --sx-dither: repeating-conic-gradient(
+      rgba(255,255,255,0.05) 0% 25%, rgba(0,0,0,0) 0% 50%) 0 / 4px 4px;
+}
+
+/* -------------------------------------------------------------
+   Helpers — opt-in classes used across the board surfaces.
+   ------------------------------------------------------------- */
+
+/* The hero "score" number — Space Mono bold, huge, crisp, hard drop. */
+.sx-number {
+  font-family: var(--ttt-font-display);
+  font-weight: 700;
+  color: var(--sx-number);
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+  text-shadow: var(--sx-num-shadow);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: none;       /* keep edges crisp at size */
+  font-smooth: never;
+}
+
+/* CRT scanline veil — sits over a surface, never intercepts clicks. */
+.sx-scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--sx-scanline);
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+/* Pitch band: mowed stripes + chalk line. */
+.sx-pitch-band {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--sx-pitch) 0, var(--sx-pitch) 28px,
+      var(--sx-pitch-dk) 28px, var(--sx-pitch-dk) 56px);
+}
+
+/* Micro-cap label, cyan, the brand's nav-label cadence. */
+.sx-cap {
+  font: var(--ttt-t-micro);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sx-accent);
+}
