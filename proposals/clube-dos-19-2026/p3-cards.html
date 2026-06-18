@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clube dos 19 · 2026 — Proposta 3 · Player select</title>
+<meta name="description" content="Fichas dos maiores artilheiros da Copa, atualizado para 2026 e com Mbappé. Base: Marcel Pilati; 2026/Mbappé: apuração ESPN/Wikipedia. “—” = dado não apurado.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="umtempao.com">
+<meta property="og:title" content="Clube dos 19 · 2026 — Gols em Copas (com Mbappé)">
+<meta property="og:description" content="Atualizado para a Copa de 2026 e com Mbappé. Messi e Klose empatados em 16 gols.">
+<meta property="og:image" content="https://umtempao.com/proposals/clube-dos-19-2026/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:url" content="https://umtempao.com/proposals/clube-dos-19-2026/p3-cards.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Clube dos 19 · 2026 — Gols em Copas (com Mbappé)">
+<meta name="twitter:image" content="https://umtempao.com/proposals/clube-dos-19-2026/og-image.png">
+<link rel="stylesheet" href="/colors_and_type.css">
+<link rel="stylesheet" href="/tokens-soccer.css">
+<style>
+  html { height: 100%; }
+  body, #root { min-height: 100%; margin: 0; padding: 0; background: #0C0820; }
+  svg { image-rendering: pixelated; }
+  .sx-number, img { image-rendering: auto; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+<script src="/proposals/clube-dos-19-2026/data.js"></script>
+<script type="text/babel" src="/proposals/clube-dos-19/shared.jsx"></script>
+<script type="text/babel">
+const { Scanlines, Cap, Wordmark, PlayerAvatar, FlagChip, BigNumber, Credit, ProposalNav } = window.UI;
+const { PLAYERS, METRICS, GROUPS, STR, t, metricLabel, groupLabel, leadersOf, fmtVal } = window.C19;
+
+const ledCount = (id) => METRICS.filter((m) => leadersOf(m).includes(id)).length;
+const FACE = ["edicoes", "jogos", "golJogo", "hatTricks"];
+
+function Card({ p, onOpen }) {
+  const [hover, setHover] = React.useState(false);
+  const led = ledCount(p.id);
+  return (
+    <div onClick={() => onOpen(p.id)} role="button" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+      style={{ position: "relative", cursor: "pointer", background: "var(--sx-crt-800)", border: `3px solid ${hover ? p.accent : "var(--sx-crt-600)"}`,
+        boxShadow: hover ? "8px 8px 0 rgba(0,0,0,0.55)" : "var(--sx-num-shadow)", transform: hover ? "translate(-2px,-2px)" : "none",
+        transition: "transform .12s, border-color .12s, box-shadow .12s", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <Scanlines opacity={0.16} />
+      <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 18px 12px", borderBottom: `2px solid ${p.accent}` }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <PlayerAvatar id={p.id} size={64} />
+          <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+            <FlagChip code={p.flag} size={20} />
+            <div style={{ font: "700 24px var(--ttt-font-display)", color: "var(--sx-ink)" }}>{p.name}</div>
+          </div>
+          <Cap color="var(--sx-ink-faint)" style={{ fontSize: 9 }}>{p.years}</Cap>
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <BigNumber value={p.goals} size={76} color={p.accent} shadow="var(--sx-num-shadow-sm)" />
+          <div style={{ font: "700 11px var(--ttt-font-display)", letterSpacing: "0.16em", color: "var(--sx-ink-dim)" }}>{t(STR.goalsCap)}</div>
+        </div>
+      </div>
+      <div style={{ position: "relative", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--sx-crt-600)" }}>
+        {FACE.map((k) => {
+          const m = METRICS.find((x) => x.key === k);
+          const lead = leadersOf(m).includes(p.id);
+          return (
+            <div key={k} style={{ background: "var(--sx-crt-800)", padding: "10px 12px" }}>
+              <Cap color="var(--sx-ink-faint)" style={{ fontSize: 9 }}>{metricLabel(m)}</Cap>
+              <div style={{ font: "700 22px var(--ttt-font-display)", color: lead ? p.accent : "var(--sx-ink)", marginTop: 2 }}>
+                {fmtVal(m, p.id)}{lead && <span style={{ color: p.accent, fontSize: 13 }}> ★</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ position: "relative", marginTop: "auto", padding: "12px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "var(--sx-crt-700)" }}>
+        <Cap color="var(--sx-ink-dim)" style={{ fontSize: 10 }}>{t(STR.p3LedFoot)}</Cap>
+        <span style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
+          <span style={{ font: "700 22px var(--ttt-font-display)", color: p.accent }}>{led}</span>
+          <Cap color="var(--sx-ink-faint)" style={{ fontSize: 9 }}>/ {METRICS.length}</Cap>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function StatSheet({ id, onClose }) {
+  const p = PLAYERS.find((x) => x.id === id);
+  React.useEffect(() => {
+    const h = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, []);
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(12,8,32,0.86)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "40px 16px", overflowY: "auto" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ position: "relative", width: "100%", maxWidth: 720, background: "var(--sx-crt-800)", border: `4px solid ${p.accent}`, boxShadow: "var(--sx-num-shadow)" }}>
+        <Scanlines opacity={0.18} />
+        <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 16, padding: "20px 22px", borderBottom: `2px solid ${p.accent}` }}>
+          <PlayerAvatar id={p.id} size={72} />
+          <div style={{ flex: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <FlagChip code={p.flag} size={24} />
+              <div style={{ font: "700 30px var(--ttt-font-display)", color: "var(--sx-ink)" }}>{p.full}</div>
+            </div>
+            <Cap color="var(--sx-ink-dim)" style={{ marginTop: 4, display: "block" }}>{p.years} · {p.goals} {t(STR.goalsShort)} · {t(STR.p3Leads)(ledCount(p.id), METRICS.length)}</Cap>
+          </div>
+          <button onClick={onClose} aria-label={t(STR.close)} style={{ background: "transparent", border: "2px solid var(--sx-crt-600)", cursor: "pointer", font: "700 18px var(--ttt-font-display)", color: "var(--sx-ink-dim)", padding: "4px 12px" }}>✕</button>
+        </div>
+        <div style={{ position: "relative", padding: "16px 22px 24px" }}>
+          {GROUPS.map((g) => (
+            <div key={g} style={{ marginBottom: 18 }}>
+              <Cap color={p.accent} style={{ display: "block", marginBottom: 8 }}>{groupLabel(g)}</Cap>
+              <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                {METRICS.filter((m) => m.group === g).map((m) => {
+                  const lead = leadersOf(m).includes(p.id);
+                  return (
+                    <div key={m.key} style={{ display: "grid", gridTemplateColumns: "1fr auto", alignItems: "center", gap: 12, padding: "8px 10px",
+                      background: lead ? "var(--sx-crt-700)" : "var(--sx-crt-900)", borderLeft: `4px solid ${lead ? p.accent : "var(--sx-crt-600)"}` }}>
+                      <span style={{ font: "var(--ttt-t-small)", color: "var(--sx-ink-dim)" }}>{metricLabel(m)}{lead && <span style={{ color: p.accent }}> {t(STR.leadTag)}</span>}</span>
+                      <span style={{ font: "700 20px var(--ttt-font-display)", color: lead ? p.accent : "var(--sx-ink)", fontVariantNumeric: "tabular-nums" }}>
+                        {fmtVal(m, p.id)}{m.unit && m.vals[p.id] != null && <span style={{ font: "var(--ttt-t-small)", color: "var(--sx-ink-faint)" }}> {m.unit}</span>}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [open, setOpen] = React.useState(null);
+  return (
+    <div style={{ position: "relative", minHeight: "100%", background: "var(--sx-crt-900)", fontFamily: "var(--ttt-font-ui)", color: "var(--sx-ink)" }}>
+      <Scanlines opacity={0.1} />
+      <ProposalNav current="p3-cards.html" />
+      <div style={{ position: "relative", maxWidth: 1040, margin: "0 auto", padding: "32px 24px 48px" }}>
+        <Wordmark />
+        <div style={{ marginTop: 6, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+          <Cap color="var(--sx-ink-faint)">{t(STR.p3Sub)}</Cap>
+          <Cap color="var(--sx-magenta)" style={{ fontSize: 10 }}>{t(STR.asOf)}</Cap>
+        </div>
+        <h1 style={{ font: "700 32px var(--ttt-font-display)", color: "var(--sx-ink)", margin: "14px 0 6px" }}>{t(STR.p3Title)}</h1>
+        <p style={{ font: "var(--ttt-t-regular)", color: "var(--sx-ink-dim)", margin: "0 0 24px" }}>{t(STR.p3Intro)}</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 18, marginBottom: 32 }}>
+          {PLAYERS.map((p) => <Card key={p.id} p={p} onOpen={setOpen} />)}
+        </div>
+        <Credit />
+      </div>
+      {open && <StatSheet id={open} onClose={() => setOpen(null)} />}
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

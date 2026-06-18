@@ -70,6 +70,54 @@ re-bake when data changes meaningfully.
 2. Add an entry to `COMPETITIONS` in `competitions.js`.
 3. Boards go under `/<competition>/<board>/`.
 
+## Clube dos 19 (proposals) + 2026 live refresh
+
+Standalone infographic prototypes under `proposals/clube-dos-19*/` — NOT registered in
+`competitions.js`, reachable only by direct URL. Compares the greatest men's WC goalscorers
+across ~23 metrics. Two folders:
+
+- `proposals/clube-dos-19/` — the **locked base**: 5 players, all numbers hand-charted by
+  **Marcel Pilati** (source `~/Downloads/Clubedos19.html`). Don't edit its data.
+- `proposals/clube-dos-19-2026/` — **live variant**: adds **Mbappé** + updates **Messi** for
+  the 2026 World Cup. `topicosLider` dropped (Pilati's 110-metric count is obsolete here).
+
+Architecture: each folder has its own `data.js` (`window.C19`); both reuse
+`proposals/clube-dos-19/shared.jsx` (`window.UI`). Players are **16×16 pixel SNES avatars**
+in `shared.jsx` `SPRITES` (head + nation kit, NOT `/flags/`). Bilingual EN/PT (`?lang=` +
+localStorage). Share card: `share-card.html` per folder → `node scripts/bake-c19-og.mjs <slug>`
+→ `og-image.png` (committed); OG/Twitter tags point at it. The 2026 `data.js` helpers
+(`leadersOf`/`rankFor`/`fmtVal`/`metricMax`) are **null-safe** — a `null` value = "stat not
+charted", renders as `—`. Never invent a hand-charted cell to fill a blank.
+
+**DATA INTEGRITY RULE:** the base sheet is Pilati's rigorous manual charting. The 2026 variant
+splits attribution in its footer (`STR.credit1`): base = Marcel Pilati, Mbappé + 2026 deltas =
+live web research (ESPN/Wikipedia). Only ~6 metrics are reliably crawlable (goals, editions,
+matches, goals/game, hat-tricks, finals goals + arithmetic from a goal-by-goal list). The other
+~17 are hand-charted (body part, game phase, individual vs assisted, winning goals, exact
+penalties, min/goal) — for Mbappé/2026 they stay `null` unless a real source confirms them.
+
+### How to refresh after a new Argentina / France match (live WC)
+
+It's frozen at a date (`STR.asOf` + the magenta stamp). Re-run when Messi/Mbappé play again:
+
+1. **Research the match(es)**, citing sources (don't trust memory — these are post-cutoff):
+   - Headline (HIGH conf., crawlable): new WC goals total, matches +1, hat-trick?, goals in a
+     match record, finals goals (if a final), Golden Boot/Ball.
+     Good sources: ESPN player "World Cup history/stats" page; Wikipedia "List of international
+     goals scored by <player>" (goal-by-goal: date, stage, opponent, foot/header); the match
+     report for how each goal was scored (foot/head, in/out of box, penalty, assisted/solo).
+   - Derived (`~`): jogosMarcando, mataMata (if knockout), chute vs cabeceio, foraArea, penalti —
+     only from the goal-by-goal detail; otherwise leave as-is and note it.
+   - `minutos`/`minGol`: live minutes aren't reliably published mid-tournament → estimate and keep
+     the `note` flagging it as partial, or leave prior value.
+2. **Show Fellipe a verification table** (value + confidence per cell) and get sign-off BEFORE
+   editing — same flow used to add Mbappé. Bake only confirmed cells.
+3. Edit `proposals/clube-dos-19-2026/data.js`: bump the confirmed `vals`, update `ASOF` to the new
+   date, adjust `note`s. Leave unconfirmed hand-charted cells `null`.
+4. Re-bake the card: `npm run serve` (if not up) then `node scripts/bake-c19-og.mjs clube-dos-19-2026`.
+   Eyeball `og-image.png`. WhatsApp caches previews — share a `?v=N` URL or use FB's Sharing Debugger.
+5. Commit + push (`main` auto-deploys via `deploy.yml`); verify `https://umtempao.com/proposals/clube-dos-19-2026/`.
+
 ## Conventions
 
 - Conventional commits (`feat:`/`fix:`/`refactor:`/`chore:`…), separate commits per logical unit.

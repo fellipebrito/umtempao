@@ -57,6 +57,14 @@ const SPRITES = {
       "....b222222b....", "......2222......", "....kk2222kk....", "..jjjjjkkjjjjj..",
       "..jjjjjjjjjjjj..", ".jjjjjjjjjjjjjj.", "jjjjjjjjjjjjjjjj", "jjjjjjjjjjjjjjjj",
     ] },
+  // Mbappé — short black hair, France dark-blue kit, red collar (2026 variant)
+  mbappe: { pal: { b: "#161023", H: "#15110E", 2: "#8A5A38", e: "#161023", m: "#5A3422", j: "#2A4BC0", k: "#E5354B" },
+    rows: [
+      "...bbbbbbbbbb...", "...bHHHHHHHHb...", "...bHHHHHHHHb...", "...bH222222Hb...",
+      "...b22e22e22b...", "...b22222222b...", "...b22222222b...", "...b222mm222b...",
+      "....b222222b....", "......2222......", "....kk2222kk....", "..jjjjjkkjjjjj..",
+      "..jjjjjjjjjjjj..", ".jjjjjjjjjjjjjj.", "jjjjjjjjjjjjjjjj", "jjjjjjjjjjjjjjjj",
+    ] },
 };
 
 // render a sprite → array of <rect>, merging horizontal runs of one color
