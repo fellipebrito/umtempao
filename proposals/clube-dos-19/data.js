@@ -131,7 +131,7 @@ const STR = {
   p3Leads:    { pt: (a, b) => `lidera ${a} de ${b} tópicos`, en: (a, b) => `leads ${a} of ${b} categories` },
   leadTag:    { pt: "★ líder", en: "★ leads" },
   close:      { pt: "Fechar", en: "Close" },
-  credit1:    { pt: "DADOS · CLUBE DOS 19", en: "DATA · CLUBE DOS 19" },
+  credit1:    { pt: "DADOS & PESQUISA · MARCEL PILATI · CLUBE DOS 19", en: "DATA & RESEARCH · MARCEL PILATI · CLUBE DOS 19" },
 };
 
 // ── language resolution (?lang= → localStorage → pt) ──────────
