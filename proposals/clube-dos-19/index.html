@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clube dos 19 — 3 propostas de infográfico</title>
+<link rel="stylesheet" href="/colors_and_type.css">
+<link rel="stylesheet" href="/tokens-soccer.css">
+<style>
+  html { height: 100%; }
+  body, #root { min-height: 100%; margin: 0; padding: 0; background: #0C0820; }
+  svg { image-rendering: pixelated; }
+  .sx-number, img { image-rendering: auto; }
+  a { color: inherit; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+<script src="/proposals/clube-dos-19/data.js"></script>
+<script type="text/babel" src="/proposals/clube-dos-19/shared.jsx"></script>
+<script type="text/babel">
+const { Scanlines, Cap, Wordmark, PlayerAvatar, Credit, BigNumber, ProposalNav } = window.UI;
+const { PLAYERS, STR, t, withLang } = window.C19;
+
+const CARDS = [
+  { href: "p1-leaderboard.html", n: "1", accent: "var(--sx-yellow)",
+    title: STR.card1Title, blurb: STR.card1Blurb, tag: STR.card1Tag },
+  { href: "p2-statbars.html", n: "2", accent: "var(--sx-cyan)",
+    title: STR.card2Title, blurb: STR.card2Blurb, tag: STR.card2Tag },
+  { href: "p3-cards.html", n: "3", accent: "var(--sx-magenta)",
+    title: STR.card3Title, blurb: STR.card3Blurb, tag: STR.card3Tag },
+];
+
+function ProposalCard({ c }) {
+  const [hover, setHover] = React.useState(false);
+  return (
+    <a href={withLang(c.href)}
+      onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+      style={{ position: "relative", display: "flex", flexDirection: "column", gap: 14, textDecoration: "none",
+        background: "var(--sx-crt-800)", border: `3px solid ${hover ? c.accent : "var(--sx-crt-600)"}`,
+        boxShadow: hover ? "8px 8px 0 rgba(0,0,0,0.55)" : "var(--sx-num-shadow)",
+        transform: hover ? "translate(-2px,-2px)" : "none", transition: "transform .12s, border-color .12s, box-shadow .12s",
+        padding: "22px 22px 24px", overflow: "hidden" }}>
+      <Scanlines opacity={0.18} />
+      <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Cap color={c.accent}>{t(STR.cardWord)}</Cap>
+        <BigNumber value={c.n} size={72} color={c.accent} shadow="var(--sx-num-shadow-sm)" />
+      </div>
+      <div style={{ position: "relative", font: "700 26px var(--ttt-font-display)", color: "var(--sx-ink)" }}>{t(c.title)}</div>
+      <div style={{ position: "relative", font: "var(--ttt-t-small)", color: "var(--sx-ink-dim)", lineHeight: 1.5 }}>{t(c.blurb)}</div>
+      <div style={{ position: "relative", marginTop: "auto" }}>
+        <Cap color="var(--sx-ink-faint)" style={{ fontSize: 10 }}>{t(c.tag)}</Cap>
+      </div>
+    </a>
+  );
+}
+
+function Menu() {
+  return (
+    <div style={{ position: "relative", minHeight: "100%", background: "var(--sx-crt-900)",
+      fontFamily: "var(--ttt-font-ui)", color: "var(--sx-ink)" }}>
+      <Scanlines opacity={0.12} />
+      <ProposalNav current="index.html" />
+      <div style={{ position: "relative", maxWidth: 1080, margin: "0 auto", padding: "40px 24px 56px" }}>
+        <Wordmark />
+        <h1 style={{ font: "700 44px/1.05 var(--ttt-font-display)", color: "var(--sx-ink)", margin: "20px 0 6px", letterSpacing: "-0.01em" }}>
+          {t(STR.menuTitleA)} <span style={{ color: "var(--sx-cyan)" }}>{t(STR.menuTitleB)}</span>
+        </h1>
+        <p style={{ font: "var(--ttt-t-large)", color: "var(--sx-ink-dim)", maxWidth: 660, margin: "0 0 22px", lineHeight: 1.45 }}>
+          {t(STR.menuIntro)}
+        </p>
+
+        {/* the five legends strip */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 20, marginBottom: 34, padding: "16px 18px",
+          background: "var(--sx-crt-800)", border: "2px solid var(--sx-crt-600)", boxShadow: "var(--sx-num-shadow-sm)" }}>
+          {PLAYERS.map((p) => (
+            <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <PlayerAvatar id={p.id} size={48} />
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={{ font: "var(--ttt-t-small-b)", color: "var(--sx-ink)" }}>{p.name}</span>
+                <span style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                  <span style={{ font: "700 18px var(--ttt-font-display)", color: p.accent }}>{p.goals}</span>
+                  <Cap color="var(--sx-ink-faint)" style={{ fontSize: 9 }}>{t(STR.goalsShort)}</Cap>
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+          {CARDS.map((c) => <ProposalCard key={c.href} c={c} />)}
+        </div>
+
+        <div style={{ marginTop: 44, textAlign: "center" }}><Credit /></div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Menu />);
+</script>
+</body>
+</html>

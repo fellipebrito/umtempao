@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clube dos 19 — Proposta 2 · Barras</title>
+<link rel="stylesheet" href="/colors_and_type.css">
+<link rel="stylesheet" href="/tokens-soccer.css">
+<style>
+  html { height: 100%; }
+  body, #root { min-height: 100%; margin: 0; padding: 0; background: #0C0820; }
+  svg { image-rendering: pixelated; }
+  .sx-number, img { image-rendering: auto; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+<script src="/proposals/clube-dos-19/data.js"></script>
+<script type="text/babel" src="/proposals/clube-dos-19/shared.jsx"></script>
+<script type="text/babel">
+const { Scanlines, Cap, Wordmark, PlayerAvatar, Credit, ProposalNav } = window.UI;
+const { PLAYERS, METRICS, GROUPS, STR, t, metricLabel, groupLabel, leadersOf, rankFor, fmtVal } = window.C19;
+
+// segmented "health bar" — pixel cells filled to pct
+function CombatBar({ p, pct, lead, dim }) {
+  const cells = 22;
+  const filled = Math.max(1, Math.round((pct / 100) * cells));
+  return (
+    <div style={{ display: "flex", gap: 2, opacity: dim ? 0.28 : 1, transition: "opacity .15s" }}>
+      {Array.from({ length: cells }).map((_, i) => (
+        <div key={i} style={{ flex: 1, height: 16,
+          background: i < filled ? p.accent : "var(--sx-crt-900)",
+          boxShadow: i < filled && lead ? `0 0 6px ${p.accent}` : "none",
+          border: "1px solid var(--sx-crt-600)" }} />
+      ))}
+    </div>
+  );
+}
+
+function MetricBlock({ metric, focus }) {
+  const vals = PLAYERS.map((p) => metric.vals[p.id]);
+  const max = Math.max(...vals), min = Math.min(...vals);
+  const leaders = leadersOf(metric);
+  // for "low is better", invert the fill so the winner reads as a full bar
+  const fillPct = (p) => {
+    const v = metric.vals[p.id];
+    if (metric.better === "low") return max === min ? 100 : (1 - (v - min) / (max - min)) * 92 + 8;
+    return max === 0 ? 8 : (v / max) * 100;
+  };
+  const ordered = rankFor(metric); // ALWAYS sorted best → worst
+  return (
+    <div style={{ position: "relative", padding: "16px 18px 18px", background: "var(--sx-crt-800)",
+      border: "2px solid var(--sx-crt-600)", boxShadow: "var(--sx-num-shadow-sm)" }}>
+      <Scanlines opacity={0.14} />
+      <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
+        <Cap color="var(--sx-cyan)">{metricLabel(metric)}</Cap>
+        {metric.better === "low" && <Cap color="var(--sx-ink-faint)" style={{ fontSize: 9 }}>{t(STR.lowerBetter)}</Cap>}
+      </div>
+      <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 8 }}>
+        {ordered.map(({ p }) => {
+          const lead = leaders.includes(p.id);
+          const dim = focus && focus !== p.id;
+          return (
+            <div key={p.id} style={{ display: "grid", gridTemplateColumns: "40px 1fr 64px", alignItems: "center", gap: 12 }}>
+              <PlayerAvatar id={p.id} size={36} frame={!dim} style={{ opacity: dim ? 0.4 : 1 }} />
+              <CombatBar p={p} pct={fillPct(p)} lead={lead} dim={dim} />
+              <span style={{ font: "700 20px var(--ttt-font-display)", color: lead ? p.accent : "var(--sx-ink-dim)",
+                textAlign: "right", fontVariantNumeric: "tabular-nums", opacity: dim ? 0.4 : 1 }}>
+                {fmtVal(metric, p.id)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      {metric.note && <div style={{ position: "relative", marginTop: 10, font: "var(--ttt-t-small)", color: "var(--sx-ink-faint)" }}>* {t(metric.note)}</div>}
+    </div>
+  );
+}
+
+function App() {
+  const [group, setGroup] = React.useState(GROUPS[0]);
+  const [focus, setFocus] = React.useState(null);
+  const metrics = METRICS.filter((m) => m.group === group);
+
+  return (
+    <div style={{ position: "relative", minHeight: "100%", background: "var(--sx-crt-900)",
+      fontFamily: "var(--ttt-font-ui)", color: "var(--sx-ink)" }}>
+      <Scanlines opacity={0.1} />
+      <ProposalNav current="p2-statbars.html" />
+      <div style={{ position: "relative", maxWidth: 920, margin: "0 auto", padding: "32px 24px 48px" }}>
+        <Wordmark />
+        <div style={{ marginTop: 6 }}><Cap color="var(--sx-ink-faint)">{t(STR.p2Sub)}</Cap></div>
+        <h1 style={{ font: "700 32px var(--ttt-font-display)", color: "var(--sx-ink)", margin: "14px 0 20px" }}>
+          {t(STR.p2Title)}
+        </h1>
+
+        {/* player legend / focus toggles */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 18 }}>
+          {PLAYERS.map((p) => {
+            const on = focus === p.id;
+            return (
+              <button key={p.id} onClick={() => setFocus(on ? null : p.id)} style={{
+                display: "inline-flex", alignItems: "center", gap: 8, cursor: "pointer", padding: "5px 10px 5px 5px",
+                background: "var(--sx-crt-800)", border: `2px solid ${on ? p.accent : "var(--sx-crt-600)"}`,
+                opacity: focus && !on ? 0.5 : 1 }}>
+                <PlayerAvatar id={p.id} size={28} frame={false} />
+                <span style={{ font: "var(--ttt-t-small-b)", color: on ? p.accent : "var(--sx-ink)" }}>{p.name}</span>
+              </button>
+            );
+          })}
+          {focus && <Cap color="var(--sx-ink-faint)" style={{ alignSelf: "center" }}>{t(STR.p2Clear)}</Cap>}
+        </div>
+
+        {/* group tabs */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 18 }}>
+          {GROUPS.map((g) => {
+            const on = g === group;
+            return (
+              <button key={g} onClick={() => setGroup(g)} style={{
+                font: "var(--ttt-t-small-b)", letterSpacing: "0.04em", cursor: "pointer", padding: "8px 14px",
+                color: on ? "var(--sx-crt-900)" : "var(--sx-ink-dim)",
+                background: on ? "var(--sx-cyan)" : "transparent",
+                border: `2px solid ${on ? "var(--sx-cyan)" : "var(--sx-crt-600)"}` }}>{groupLabel(g)}</button>
+            );
+          })}
+        </div>
+
+        {/* metric blocks */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 30 }}>
+          {metrics.map((m) => <MetricBlock key={m.key} metric={m} focus={focus} />)}
+        </div>
+
+        <Credit />
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
