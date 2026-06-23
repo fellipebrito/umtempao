@@ -1,7 +1,7 @@
 /* global window */
 // ── CLUBE DOS 19 · 2026 LIVE variant · dataset + i18n ─────────
 // Adds Mbappé and updates Messi for the 2026 World Cup (in progress).
-// FROZEN as of 17 Jun 2026 — re-run the research pass after each new
+// FROZEN as of 22 Jun 2026 — re-run the research pass after each new
 // Argentina / France match (see CLAUDE.md "Clube dos 19 — live refresh").
 //
 // Attribution is SPLIT, on purpose:
@@ -14,14 +14,14 @@
 // Wrapped in an IIFE so only window.C19 leaks.
 (function () {
 
-const ASOF = { pt: "ATUALIZADO 17 JUN 2026", en: "UPDATED 17 JUN 2026" };
+const ASOF = { pt: "ATUALIZADO 22 JUN 2026", en: "UPDATED 22 JUN 2026" };
 
 const PLAYERS = [
-  { id: "messi", name: "Messi",    full: "Lionel Messi",   flag: "arg", years: "2006–2026", accent: "#FF3DA6", goals: 16 },
+  { id: "messi", name: "Messi",    full: "Lionel Messi",   flag: "arg", years: "2006–2026", accent: "#FF3DA6", goals: 18 },
   { id: "klose", name: "Klose",    full: "Miroslav Klose", flag: "ger", years: "2002–2014", accent: "#FF8A3D", goals: 16 },
   { id: "r9",    name: "Ronaldo",  full: "Ronaldo (R9)",   flag: "bra", years: "1998–2006", accent: "#34E6D9", goals: 15 },
   { id: "muller",name: "G. Müller",full: "Gerd Müller",    flag: "ger", years: "1970–1974", accent: "#5BE37E", goals: 14 },
-  { id: "mbappe",name: "Mbappé",   full: "Kylian Mbappé",  flag: "fra", years: "2018–2026", accent: "#4D7CFF", goals: 14 },
+  { id: "mbappe",name: "Mbappé",   full: "Kylian Mbappé",  flag: "fra", years: "2018–2026", accent: "#4D7CFF", goals: 16 },
   { id: "pele",  name: "Pelé",     full: "Edson Arantes",  flag: "bra", years: "1958–1970", accent: "#FFE24D", goals: 12 },
 ];
 
@@ -32,23 +32,24 @@ const M = (key, label, en, group, better, vals, opts = {}) =>
 const METRICS = [
   // ── VOLUME ────────────────────────────────────────────────
   M("gols", "Gols em Copas", "World Cup goals", "Volume", "high",
-    { r9: 15, messi: 16, pele: 12, muller: 14, klose: 16, mbappe: 14 },
-    { disp: { r9: "14 (15)" }, note: { pt: "Messi e Klose: 16 (recorde). R9: 14 oficiais, 15 com o anulado.", en: "Messi & Klose: 16 (record). R9: 14 official, 15 with the disallowed one." } }),
+    { r9: 15, messi: 18, pele: 12, muller: 14, klose: 16, mbappe: 16 },
+    { disp: { r9: "14 (15)" }, note: { pt: "Messi: 18 (recorde isolado); Klose e Mbappé: 16. R9: 14 oficiais, 15 com o anulado.", en: "Messi: 18 (outright record); Klose & Mbappé: 16. R9: 14 official, 15 with the disallowed one." } }),
   M("edicoes", "Copas disputadas", "World Cups played", "Volume", "high",
     { r9: 4, messi: 6, pele: 4, muller: 2, klose: 4, mbappe: 3 }),
   M("jogos", "Jogos", "Matches", "Volume", "high",
-    { r9: 19, messi: 27, pele: 14, muller: 13, klose: 24, mbappe: 15 }),
+    { r9: 19, messi: 28, pele: 14, muller: 13, klose: 24, mbappe: 16 }),
   M("minutos", "Minutos em campo", "Minutes played", "Volume", "high",
-    { r9: 1624, messi: 2400, pele: 1260, muller: 1230, klose: 1793, mbappe: 1221 },
-    { unit: "min", note: { pt: "Minutos de 2026 do Messi são estimados (parcial).", en: "Messi's 2026 minutes are estimated (partial)." } }),
+    { r9: 1624, messi: 2490, pele: 1260, muller: 1230, klose: 1793, mbappe: 1311 },
+    { unit: "min", note: { pt: "Minutos de 2026 de Messi e Mbappé são estimados (parcial, +90min por jogo).", en: "Messi's and Mbappé's 2026 minutes are estimated (partial, +90min per match)." } }),
   M("jogosMarcando", "Jogos marcando", "Matches scoring", "Volume", "high",
-    { r9: 11, messi: 12, pele: 8, muller: 9, klose: 11, mbappe: 8 }),
+    { r9: 11, messi: 13, pele: 8, muller: 9, klose: 11, mbappe: 9 }),
 
   // ── EFICIÊNCIA ────────────────────────────────────────────
   M("golJogo", "Gols por jogo", "Goals per match", "Eficiência", "high",
-    { r9: 0.79, messi: 0.59, pele: 0.86, muller: 1.08, klose: 0.66, mbappe: 0.93 }),
+    { r9: 0.79, messi: 0.64, pele: 0.86, muller: 1.08, klose: 0.66, mbappe: 1.0 }),
   M("minGol", "Minutos por gol", "Minutes per goal", "Eficiência", "low",
-    { r9: 116, messi: 150, pele: 105, muller: 87.8, klose: 112.1, mbappe: 87.2 }, { unit: "min" }),
+    { r9: 116, messi: 138.3, pele: 105, muller: 87.8, klose: 112.1, mbappe: 81.9 },
+    { unit: "min", note: { pt: "Baseado em minutos estimados para Messi e Mbappé (parcial).", en: "Based on estimated minutes for Messi and Mbappé (partial)." } }),
   M("hatTricks", "Hat-tricks", "Hat-tricks", "Eficiência", "high",
     { r9: 0, messi: 1, pele: 1, muller: 2, klose: 1, mbappe: 1 }),
   M("golsUmJogo", "Recorde de gols num jogo", "Most goals in a match", "Eficiência", "high",
@@ -61,10 +62,10 @@ const METRICS = [
     { r9: 4, messi: 8, pele: 7, muller: 5, klose: 3, mbappe: 2 },
     { disp: { messi: "6 (8)", pele: "6 (7)", klose: "2 (3)" } }),
   M("golAssist", "Gols + assistências", "Goals + assists", "Criação", "high",
-    { r9: 19, messi: 24, pele: 19, muller: 19, klose: 19, mbappe: 16 },
+    { r9: 19, messi: 26, pele: 19, muller: 19, klose: 19, mbappe: 18 },
     { disp: { r9: "18 (19)", pele: "18 (19)", klose: "18 (19)" } }),
   M("partTotais", "Participações totais em gols", "Total goal involvements", "Criação", "high",
-    { r9: 20, messi: 28, pele: 19, muller: 20, klose: 19, mbappe: 16 }),
+    { r9: 20, messi: 30, pele: 19, muller: 20, klose: 19, mbappe: 18 }),
 
   // ── DECISIVO ──────────────────────────────────────────────
   M("mataMata", "Gols no mata-mata", "Knockout-stage goals", "Decisivo", "high",
@@ -82,7 +83,7 @@ const METRICS = [
   M("cabeceio", "Gols de cabeça", "Headed goals", "Estilo", "high",
     { r9: 1, messi: 0, pele: 2, muller: 5, klose: 7, mbappe: 0 }),
   M("chute", "Gols com os pés", "Goals with the feet", "Estilo", "high",
-    { r9: 13, messi: 16, pele: 10, muller: 9, klose: 9, mbappe: 14 }),
+    { r9: 13, messi: 18, pele: 10, muller: 9, klose: 9, mbappe: 16 }),
   M("penalti", "Gols de pênalti", "Penalty goals", "Estilo", "high",
     { r9: 1, messi: 4, pele: 0, muller: 1, klose: 0, mbappe: 2 }),
   M("foraArea", "Gols de fora da área", "Goals from outside the box", "Estilo", "high",
@@ -102,8 +103,8 @@ const STR = {
   lowerBetter:{ pt: "menor é melhor", en: "lower is better" },
   menuTitleA: { pt: "Os reis da Copa,", en: "The kings of the World Cup," },
   menuTitleB: { pt: "frente a frente", en: "head to head" },
-  menuIntro:  { pt: "Klose e Messi empatados em 16, Ronaldo, Gerd Müller, Mbappé e Pelé — os maiores artilheiros da Copa, agora com Mbappé e a Copa de 2026 em andamento. Três jeitos de comparar.",
-                en: "Klose and Messi level on 16, Ronaldo, Gerd Müller, Mbappé and Pelé — the greatest World Cup scorers, now with Mbappé and the 2026 tournament in progress. Three ways to compare." },
+  menuIntro:  { pt: "Messi chega a 18 gols — recorde isolado na história das Copas. Mbappé empata Klose em 16. Ronaldo, Gerd Müller e Pelé completam o top 6, com a Copa de 2026 em andamento. Três jeitos de comparar.",
+                en: "Messi reaches 18 goals — the outright World Cup scoring record. Mbappé ties Klose on 16. Ronaldo, Gerd Müller and Pelé complete the top 6, with the 2026 tournament still in progress. Three ways to compare." },
   cardWord:   { pt: "Proposta", en: "Proposal" },
   card1Title: { pt: "Ranking", en: "Ranking" },
   card1Blurb: { pt: "Pódio dos artilheiros. Número-herói gigante no líder, troca a métrica e o pódio se reordena ao vivo.",
